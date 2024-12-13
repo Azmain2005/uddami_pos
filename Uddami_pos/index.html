@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Course</title>
+</head>
+<body>
+    <h2>Upload Course</h2>
+    <form id="courseForm" enctype="multipart/form-data">
+        <label for="CourseID">Course ID:</label>
+        <input type="text" id="CourseID" name="CourseID" required><br><br>
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="image">Image File:</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <button type="submit">Submit Course</button>
+    </form>
+
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById('courseForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Create FormData object to handle multipart/form-data
+            const formData = new FormData();
+            formData.append('CourseID', document.getElementById('CourseID').value);
+            formData.append('title', document.getElementById('title').value);
+            formData.append('image', document.getElementById('image').files[0]); // Add the image file
+            formData.append('description', document.getElementById('description').value);
+
+            // Send form data to API
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/courses/', {
+                    method: 'POST',
+                    body: formData, // Send FormData object directly
+                });
+
+                // Handle response
+                if (response.ok) {
+                    document.getElementById('responseMessage').textContent = 'Course uploaded successfully!';
+                } else {
+                    document.getElementById('responseMessage').textContent = 'Error uploading course: ' + response.statusText;
+                }
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
